@@ -84,7 +84,7 @@ function filterByCountryAbrv(countryISO2, extraData) {
 map.flyTo([39.909736, -9.667969], 5);
 
 //country selected with a layer on top
-L.geoJSON(dataToGeoJson, {
+var secondLayer = L.geoJSON(dataToGeoJson, {
   style: {
     fillColor: "#8A428F",
     weight: 0,
@@ -97,5 +97,51 @@ L.geoJSON(dataToGeoJson, {
     layer
       .bindPopup(feature.properties.NAME)
       .setPopupContent(content(feature.properties));
+
+    //layer.options.popupContent = content(feature.properties);
   },
 }).addTo(map);
+
+// remove a specific layer when its created.
+//map.removeLayer(layer);
+
+secondLayer.on("mouseover", handleMouseOver);
+secondLayer.on("mouseout", handleMouseOut);
+secondLayer.on("click", handleClick);
+
+function handleMouseOver(e) {
+  var layer = e.layer; // The layer that was hovered over
+  var laglng = e.latlng;
+  console.log(e);
+
+  // Display the popup content
+  if (!layer.isPopupOpen()) {
+    // If the popup is not open, open it
+    layer.openPopup([laglng.lat, laglng.lng]);
+  }
+
+  this.setStyle({
+    weight: 5,
+    color: "#666",
+    dashArray: "",
+    fillOpacity: 0.7,
+  });
+}
+
+function handleMouseOut(e) {
+  var layer = e.layer; // The layer that was unhovered
+  // Close the popup when the mouse leaves the layer
+  layer.closePopup();
+}
+
+function handleClick(e) {
+  var layer = e.layer; // The layer that was clicked
+  var laglng = e.latlng;
+
+  // Check if the popup is open
+  if (!layer.isPopupOpen()) {
+    layer.closePopup();
+  } else {
+    layer.openPopup([laglng.lat, laglng.lng]);
+  }
+}

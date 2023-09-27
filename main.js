@@ -66,7 +66,6 @@ function content(properties) {
 }
 
 function tryToFilter(data, ISO2 = "PT") {
-  console.log("aqui");
   for (var i = 0; i < data.features.length; i++) {
     var feature = data.features[i];
     if (feature.properties.ISO2 === ISO2) {
@@ -97,8 +96,6 @@ var secondLayer = L.geoJSON(dataToGeoJson, {
     layer
       .bindPopup(feature.properties.NAME)
       .setPopupContent(content(feature.properties));
-
-    //layer.options.popupContent = content(feature.properties);
   },
 }).addTo(map);
 

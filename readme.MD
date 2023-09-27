@@ -68,6 +68,10 @@ function tryToFilter(data, ISO2 = "PT") {
 
 The parameter ISO2 is the country code of the country that I want to filter. And the data parameter is the geoJson object.
 
+## Result
+
+![Alt text](image.png)
+
 ## Conclusion
 
 For using this methos in OutSystems we need to create a web block with the html and javascript of the map and then we can use this web block in our application.

@@ -1,27 +1,30 @@
 import data from "./geoJson";
 
-var map = L.map("map").setView([0, 0], 1).setMinZoom(2).setMaxZoom(19);
+var worldBounds = L.latLngBounds(
+  L.latLng(-90, -180), // Southwest corner (bottom-left)
+  L.latLng(90, 180) // Northeast corner (top-right)
+);
+
+var map = L.map("map", {
+  maxBounds: worldBounds,
+  center: [0, 0], // Initial map center
+  zoom: 2, // Initial zoom level
+})
+  .setView([0, 0], 2)
+  .setMinZoom(2)
+  .setMaxZoom(10);
 
 const dataToGeoJson = tryToFilter(data);
 
 //all countries
-L.geoJSON(data, {
-  style: {
-    fillColor: "#fff",
-    weight: 2,
-    opacity: 1,
-    color: "#D9D9D9",
-    dashArray: "1",
-    fillOpacity: 1,
-  },
-  onEachFeature: (feature, layer) => {
-    layer
-      .bindPopup(feature.properties.NAME, {
-        closeButton: false,
-      })
-      .setPopupContent(content(feature.properties));
-  },
-}).addTo(map);
+L.tileLayer(
+  "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+  {
+    attribution: "©OpenStreetMap, ©CartoDB",
+  }
+).addTo(map);
+
+map.zoomControl.setPosition("bottomright");
 
 function content(properties) {
   const extraData = [
@@ -80,7 +83,7 @@ function filterByCountryAbrv(countryISO2, extraData) {
 }
 
 //function to zoom into a country
-map.flyTo([39.909736, -9.667969], 5);
+map.flyTo([39.909736, -9.667969], 3);
 
 //country selected with a layer on top
 var secondLayer = L.geoJSON(dataToGeoJson, {
@@ -128,6 +131,16 @@ function handleMouseOver(e) {
 function handleMouseOut(e) {
   var layer = e.layer; // The layer that was unhovered
   // Close the popup when the mouse leaves the layer
+
+  this.setStyle({
+    fillColor: "#8A428F",
+    weight: 0,
+    opacity: 1,
+    color: "white",
+    dashArray: "1",
+    fillOpacity: 1,
+  });
+
   layer.closePopup();
 }
 
